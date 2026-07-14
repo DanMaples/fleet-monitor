@@ -118,8 +118,9 @@ triggers it).
 
 ### How long did you spend, and what was the hardest part?
 
+All together, I spent approximately 4 hours on this challenge.
 Implementing the straightforward version of the API (routing, storage,
-CSV loading, the calculations) took under an hour. Almost all the
+CSV loading, the calculations) took about an hour. Almost all the
 remaining time went into one thing: getting the uptime calculation to
 match the simulator's expected values exactly. The formula as written in
 the PDF is ambiguous about whether the "minutes between first and last
@@ -129,7 +130,10 @@ output. I resolved it by trying the literal, non-inclusive reading
 instead and rerunning the simulator, which matched its expected values
 exactly across all five devices. This makes the discrepancy exact and
 unambiguous rather than a guessing game, however it does leave a blind
-spot, which I documented.
+spot, which I documented. The other thing I spent a lot of time on was 
+going over the code with a fine tooth comb to make sure it was easy to
+understand and I was doing things in the best way I could possibly
+think of.
 
 ### How would you modify the data model to support more kinds of metrics?
 
