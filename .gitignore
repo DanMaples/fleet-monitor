@@ -1,0 +1,8 @@
+/fleet-server
+/server
+*.test
+
+# Large third-party challenge assets, not part of the submission's code.
+# See README.md for where to download these.
+device-simulator-*
+safelyyou-coding-challenge-*.pdf
