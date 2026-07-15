@@ -46,46 +46,56 @@ func doRequest(t *testing.T, h http.Handler, method, path string, body any) *htt
 	return rec
 }
 
-func TestPostHeartbeat_UnknownDeviceReturns404(t *testing.T) {
-	h := newTestServer()
-	rec := doRequest(t, h, http.MethodPost, "/api/v1/devices/unknown/heartbeat", heartbeatRequest{})
-	if rec.Code != http.StatusNotFound {
-		t.Fatalf("status = %d, want 404", rec.Code)
+func TestRequests(t *testing.T) {
+	tests := map[string]struct {
+		method     string
+		path       string
+		body       any
+		wantStatus int
+	}{
+		"POST heartbeat for unknown device returns 404": {
+			method:     http.MethodPost,
+			path:       "/api/v1/devices/unknown/heartbeat",
+			body:       heartbeatRequest{},
+			wantStatus: http.StatusNotFound,
+		},
+		"POST heartbeat for known device returns 204": {
+			method: http.MethodPost,
+			path:   "/api/v1/devices/dev-1/heartbeat",
+			body: heartbeatRequest{
+				SentAt: mustParseTime("2024-01-01T00:00:00Z"),
+			},
+			wantStatus: http.StatusNoContent,
+		},
+		"POST stats for known device returns 204": {
+			method: http.MethodPost,
+			path:   "/api/v1/devices/dev-1/stats",
+			body: statsRequest{
+				SentAt:     mustParseTime("2024-01-01T00:00:00Z"),
+				UploadTime: 1_000_000_000,
+			},
+			wantStatus: http.StatusNoContent,
+		},
+		"GET stats with no data yet returns 204": {
+			method:     http.MethodGet,
+			path:       "/api/v1/devices/dev-1/stats",
+			wantStatus: http.StatusNoContent,
+		},
+		"GET stats for unknown device returns 404": {
+			method:     http.MethodGet,
+			path:       "/api/v1/devices/unknown/stats",
+			wantStatus: http.StatusNotFound,
+		},
 	}
-}
 
-func TestPostHeartbeat_KnownDeviceReturns204(t *testing.T) {
-	h := newTestServer()
-	rec := doRequest(t, h, http.MethodPost, "/api/v1/devices/dev-1/heartbeat", heartbeatRequest{SentAt: mustParseTime("2024-01-01T00:00:00Z")})
-	if rec.Code != http.StatusNoContent {
-		t.Fatalf("status = %d, want 204", rec.Code)
-	}
-}
-
-func TestPostStats_KnownDeviceReturns204(t *testing.T) {
-	h := newTestServer()
-	rec := doRequest(t, h, http.MethodPost, "/api/v1/devices/dev-1/stats", statsRequest{
-		SentAt:     mustParseTime("2024-01-01T00:00:00Z"),
-		UploadTime: 1_000_000_000,
-	})
-	if rec.Code != http.StatusNoContent {
-		t.Fatalf("status = %d, want 204", rec.Code)
-	}
-}
-
-func TestGetStats_NoDataReturns204(t *testing.T) {
-	h := newTestServer()
-	rec := doRequest(t, h, http.MethodGet, "/api/v1/devices/dev-1/stats", nil)
-	if rec.Code != http.StatusNoContent {
-		t.Fatalf("status = %d, want 204", rec.Code)
-	}
-}
-
-func TestGetStats_UnknownDeviceReturns404(t *testing.T) {
-	h := newTestServer()
-	rec := doRequest(t, h, http.MethodGet, "/api/v1/devices/unknown/stats", nil)
-	if rec.Code != http.StatusNotFound {
-		t.Fatalf("status = %d, want 404", rec.Code)
+	for name, tt := range tests {
+		t.Run(name, func(t *testing.T) {
+			h := newTestServer()
+			rec := doRequest(t, h, tt.method, tt.path, tt.body)
+			if rec.Code != tt.wantStatus {
+				t.Fatalf("status = %d, want %d", rec.Code, tt.wantStatus)
+			}
+		})
 	}
 }
 
