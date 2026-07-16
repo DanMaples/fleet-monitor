@@ -6,7 +6,7 @@ package api
 import (
 	"encoding/json"
 	"errors"
-	"log"
+	"log/slog"
 	"net/http"
 
 	"fleet-monitor/internal/telemetry"
@@ -40,12 +40,18 @@ func (h *handlers) PostHeartbeat(w http.ResponseWriter, r *http.Request) {
 
 	var req heartbeatRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		slog.Warn("invalid request body", "device_id", deviceID, "error", err)
 		writeError(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
+	if err := req.validate(); err != nil {
+		slog.Warn("invalid heartbeat request", "device_id", deviceID, "error", err)
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
 
-	if err := h.store.RecordHeartbeat(deviceID, req.SentAt); err != nil {
-		writeTelemetryError(w, err)
+	if err := h.store.RecordHeartbeat(deviceID, *req.SentAt); err != nil {
+		writeTelemetryError(w, deviceID, err)
 		return
 	}
 
@@ -57,12 +63,18 @@ func (h *handlers) PostStats(w http.ResponseWriter, r *http.Request) {
 
 	var req statsRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		slog.Warn("invalid request body", "device_id", deviceID, "error", err)
 		writeError(w, http.StatusBadRequest, "invalid request body")
 		return
 	}
+	if err := req.validate(); err != nil {
+		slog.Warn("invalid stats request", "device_id", deviceID, "error", err)
+		writeError(w, http.StatusBadRequest, err.Error())
+		return
+	}
 
-	if err := h.store.RecordUploadStat(deviceID, req.SentAt, req.UploadTime); err != nil {
-		writeTelemetryError(w, err)
+	if err := h.store.RecordUploadStat(deviceID, *req.SentAt, *req.UploadTime); err != nil {
+		writeTelemetryError(w, deviceID, err)
 		return
 	}
 
@@ -78,7 +90,7 @@ func (h *handlers) GetStats(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusNoContent)
 			return
 		}
-		writeTelemetryError(w, err)
+		writeTelemetryError(w, deviceID, err)
 		return
 	}
 
@@ -88,12 +100,13 @@ func (h *handlers) GetStats(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-func writeTelemetryError(w http.ResponseWriter, err error) {
+func writeTelemetryError(w http.ResponseWriter, deviceID string, err error) {
 	if errors.Is(err, telemetry.ErrDeviceNotFound) {
+		slog.Warn("unknown device", "device_id", deviceID)
 		writeError(w, http.StatusNotFound, "device not found")
 		return
 	}
-	log.Printf("internal error: %v", err)
+	slog.Error("internal error", "device_id", deviceID, "error", err)
 	writeError(w, http.StatusInternalServerError, "internal error")
 }
 
@@ -105,6 +118,6 @@ func writeJSON(w http.ResponseWriter, status int, body any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	if err := json.NewEncoder(w).Encode(body); err != nil {
-		log.Printf("failed to encode response body: %v", err)
+		slog.Error("failed to encode response body", "error", err)
 	}
 }

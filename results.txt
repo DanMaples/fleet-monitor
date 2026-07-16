@@ -1,17 +1,17 @@
-[device-simulator] 2026/07/12 16:02:06 finished loading stats requests
-[device-simulator] 2026/07/12 16:02:06 finished loading heartbeat requests
-[device-simulator] 2026/07/12 16:02:06 starting requests for device_id: 60-6b-44-84-dc-64 
-[device-simulator] 2026/07/12 16:02:06 starting requests for device_id: b4-45-52-a2-f1-3c 
-[device-simulator] 2026/07/12 16:02:06 starting requests for device_id: 26-9a-66-01-33-83 
-[device-simulator] 2026/07/12 16:02:06 starting requests for device_id: 18-b8-87-e7-1f-06 
-[device-simulator] 2026/07/12 16:02:06 starting requests for device_id: 38-4e-73-e0-33-59 
-[device-simulator] 2026/07/12 16:02:06 executing 100 stats and 479 heartbeats for 60-6b-44-84-dc-64
-[device-simulator] 2026/07/12 16:02:06 executing 100 stats and 479 heartbeats for 38-4e-73-e0-33-59
-[device-simulator] 2026/07/12 16:02:06 executing 100 stats and 446 heartbeats for 26-9a-66-01-33-83
-[device-simulator] 2026/07/12 16:02:06 executing 100 stats and 480 heartbeats for b4-45-52-a2-f1-3c
-[device-simulator] 2026/07/12 16:02:06 executing 100 stats and 474 heartbeats for 18-b8-87-e7-1f-06
-[device-simulator] 2026/07/12 16:02:06 ############ RESULTS #################
-[device-simulator] 2026/07/12 16:02:06 
+[device-simulator] 2026/07/16 13:19:00 finished loading stats requests
+[device-simulator] 2026/07/16 13:19:00 finished loading heartbeat requests
+[device-simulator] 2026/07/16 13:19:00 starting requests for device_id: 60-6b-44-84-dc-64 
+[device-simulator] 2026/07/16 13:19:00 starting requests for device_id: b4-45-52-a2-f1-3c 
+[device-simulator] 2026/07/16 13:19:00 starting requests for device_id: 26-9a-66-01-33-83 
+[device-simulator] 2026/07/16 13:19:00 starting requests for device_id: 18-b8-87-e7-1f-06 
+[device-simulator] 2026/07/16 13:19:00 starting requests for device_id: 38-4e-73-e0-33-59 
+[device-simulator] 2026/07/16 13:19:00 executing 100 stats and 480 heartbeats for b4-45-52-a2-f1-3c
+[device-simulator] 2026/07/16 13:19:00 executing 100 stats and 479 heartbeats for 38-4e-73-e0-33-59
+[device-simulator] 2026/07/16 13:19:00 executing 100 stats and 446 heartbeats for 26-9a-66-01-33-83
+[device-simulator] 2026/07/16 13:19:00 executing 100 stats and 474 heartbeats for 18-b8-87-e7-1f-06
+[device-simulator] 2026/07/16 13:19:00 executing 100 stats and 479 heartbeats for 60-6b-44-84-dc-64
+[device-simulator] 2026/07/16 13:19:00 ############ RESULTS #################
+[device-simulator] 2026/07/16 13:19:00 
 DeviceID: 60-6b-44-84-dc-64
 	Uptime
 		Expected: 99.79167
@@ -20,7 +20,7 @@ DeviceID: 60-6b-44-84-dc-64
 	AvgUploadTime
 		Expected: 3m7.893379134s
 		Actual: 3m7.893379134s
-[device-simulator] 2026/07/12 16:02:06 
+[device-simulator] 2026/07/16 13:19:00 
 DeviceID: b4-45-52-a2-f1-3c
 	Uptime
 		Expected: 100.00000
@@ -29,7 +29,7 @@ DeviceID: b4-45-52-a2-f1-3c
 	AvgUploadTime
 		Expected: 3m19.085533836s
 		Actual: 3m19.085533836s
-[device-simulator] 2026/07/12 16:02:06 
+[device-simulator] 2026/07/16 13:19:00 
 DeviceID: 26-9a-66-01-33-83
 	Uptime
 		Expected: 92.91667
@@ -38,7 +38,7 @@ DeviceID: 26-9a-66-01-33-83
 	AvgUploadTime
 		Expected: 3m21.858747766s
 		Actual: 3m21.858747766s
-[device-simulator] 2026/07/12 16:02:06 
+[device-simulator] 2026/07/16 13:19:00 
 DeviceID: 18-b8-87-e7-1f-06
 	Uptime
 		Expected: 98.75000
@@ -47,7 +47,7 @@ DeviceID: 18-b8-87-e7-1f-06
 	AvgUploadTime
 		Expected: 3m17.331667813s
 		Actual: 3m17.331667813s
-[device-simulator] 2026/07/12 16:02:06 
+[device-simulator] 2026/07/16 13:19:00 
 DeviceID: 38-4e-73-e0-33-59
 	Uptime
 		Expected: 99.79167
@@ -56,4 +56,4 @@ DeviceID: 38-4e-73-e0-33-59
 	AvgUploadTime
 		Expected: 3m29.226522788s
 		Actual: 3m29.226522788s
-[device-simulator] 2026/07/12 16:02:06 all done!
+[device-simulator] 2026/07/16 13:19:00 all done!

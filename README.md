@@ -110,9 +110,26 @@ needs no lock.
 **HTTP status codes.** `404` for an unknown `device_id` (not in
 `devices.csv`), `204` from `GET .../stats` if the device is known but has
 no data yet, `200` with the JSON body once there's at least one heartbeat
-or upload-time sample, and `400` for a malformed request body (not
-specified in `openapi.json`, but reasonable, since the simulator never
-triggers it).
+or upload-time sample, and `400` for a malformed request body or a
+missing required field (neither is specified in `openapi.json`, but both
+are reasonable, since the simulator never triggers them).
+
+**Input validation.** `sent_at` and `upload_time` are `*time.Time` and
+`*uint64` in the request bodies (`internal/api/payloads.go`), not plain
+values, specifically so a `validate()` method can tell "field omitted"
+(nil) apart from "field sent with its zero value". `upload_time: 0` is a
+legitimate, if unusual, measurement; an omitted `upload_time` is a
+malformed request. Before this, a missing `upload_time` silently decoded
+to `0` and got recorded as if it were a real sample. Now it's rejected
+with `400` and a message naming the missing field.
+
+**Logging.** All logging goes through `log/slog` as structured key/value
+pairs (JSON), configured once in `cmd/server/main.go`, rather than
+freeform `log.Printf` strings. Beyond the existing per-request access log
+(method, path, status, duration), handlers log a warning for
+malformed or invalid requests and for unknown-device lookups, and an
+error for anything unexpected, each tagged with the `device_id` that
+triggered it.
 
 ## Write-up
 

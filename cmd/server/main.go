@@ -8,8 +8,9 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"log"
+	"log/slog"
 	"net/http"
+	"os"
 	"os/signal"
 	"syscall"
 	"time"
@@ -20,15 +21,18 @@ import (
 )
 
 func main() {
+	slog.SetDefault(slog.New(slog.NewJSONHandler(os.Stdout, nil)))
+
 	port := flag.Int("port", 6733, "port to listen on")
 	devicesPath := flag.String("devices", "devices.csv", "path to the devices CSV file")
 	flag.Parse()
 
 	devices, err := device.LoadCSV(*devicesPath)
 	if err != nil {
-		log.Fatalf("failed to load devices from %s: %v", *devicesPath, err)
+		slog.Error("failed to load devices", "path", *devicesPath, "error", err)
+		os.Exit(1)
 	}
-	log.Printf("loaded %d device(s) from %s", len(devices), *devicesPath)
+	slog.Info("loaded devices", "count", len(devices), "path", *devicesPath)
 
 	telemetryStore := telemetry.NewMemoryStore(devices)
 	apiHandlers := api.NewHandlers(telemetryStore)
@@ -43,18 +47,21 @@ func main() {
 	defer stop()
 
 	go func() {
-		log.Printf("listening on %s (base path /api/v1)", srv.Addr)
+		slog.Info("listening", "addr", srv.Addr, "base_path", "/api/v1")
 		if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
-			log.Fatalf("server error: %v", err)
+			slog.Error("server error", "error", err)
+			os.Exit(1)
 		}
 	}()
 
 	<-ctx.Done()
-	log.Println("shutting down...")
+	slog.Info("shutting down")
 
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(shutdownCtx); err != nil {
-		log.Fatalf("graceful shutdown failed: %v", err)
+		slog.Error("graceful shutdown failed", "error", err)
+		os.Exit(1)
 	}
+	slog.Info("shutdown complete")
 }
